@@ -1,3 +1,9 @@
+//! Classe estrutura de dado, Lista encadeada.
+/*!
+* \author Vinicius Macelai.
+* \since 08/09/16
+* \version 1.0
+*/
 
 #ifndef STRUCTURES_LINKED_LIST_H
 #define STRUCTURES_LINKED_LIST_H
@@ -8,23 +14,101 @@
 namespace structures {
 
 template<typename T>
+//! Classe da Lista encadeada.
+/*!
+*/
 class LinkedList {
 public:
+//! Construtor da classe padrÃ£o .
+/*!
+*/
     LinkedList();
+//! Destrutor da classe.
+/*!
+*/
     ~LinkedList();
+//! Limpa a fila.
+/*!
+*/
     void clear();
+//! Inserir um dado na lista na última posição.
+/*!
+\param data um generico do dado.
+\sa insert()
+*/
     void push_back(const T& data);
+//! Inserir um dado na lista na primeira posição.
+/*!
+\param data um generico do dado.
+*/
     void push_front(const T& data);
+//! Inserir um dado na lista em posição determinado.
+/*!
+\param data um generico do dado.
+\param index um size_t que representa o endereço para colocar na posição.
+*/
     void insert(const T& data, std::size_t index);
+//! Inserir um dado na lista em ordem.
+/*!
+\param data um generico do dado.
+*/
     void insert_sorted(const T& data);
+//! Verifica dado em posição
+/*!
+\param index um size_t que representa o endereço.
+\return um generico
+\sa empty()
+*/
     T& at(std::size_t index);
+//! Retira um dado de uma posição
+/*!
+\param index um size_t que representa o endereço.
+\return um dado.
+\sa empty()
+*/
     T pop(std::size_t index);
+//! Retira um dado da última posição.
+/*!
+\return um dado.
+\sa empty(), pop()
+*/
     T pop_back();
+//! Retira um dado da primeira posição
+/*!
+\return um dado.
+\sa empty()
+*/
     T pop_front(); 
+//! Remove um dado percorrendo até descobrir.
+/*!
+\param data um gênerico do dado.
+\sa empty(),find(),pop()
+\return um dado.
+*/
     void remove(const T& data);
-    bool empty() const; 
+//! Verifica se está vazio
+/*!
+\return um boolean.
+*/
+    bool empty() const;
+//! Verifica se contém um dado.
+/*!
+\param data um generico do dado.
+\return um boolean.
+\sa empty(), find()
+*/  
     bool contains(const T& data) const;
+//! Acha um dado na lista.
+/*!
+\param data um generico do dado.
+\return um boolean.
+\sa empty()
+*/
     std::size_t find(const T& data) const;
+//! Verifica o tamanho.
+/*!
+\return o tamanho.
+*/
     std::size_t size() const;
 private:
     class Node {
@@ -91,9 +175,6 @@ structures::LinkedList<T>::~LinkedList(){
 
 template<typename T>
 void structures::LinkedList<T>::clear(){
-    if(empty)
-        throw std::out_of_range("Empty");
-
     Node *atual, *anterior;
     atual=head;
     while(atual != nullptr){
@@ -102,6 +183,7 @@ void structures::LinkedList<T>::clear(){
         delete anterior;
     }
     size_=0;
+    head=nullptr;
 }
 
 template<typename T>
@@ -112,10 +194,10 @@ void structures::LinkedList<T>::push_back(const T& data){
 template<typename T>
 void structures::LinkedList<T>::push_front(const T& data){
     Node *novo = new Node(data, head);
-    if(novo = nullptr)
+    if(novo == nullptr)
         throw std::out_of_range("Full");
 
-    head->next(novo);
+    head=novo;
     ++size_; 
 }
 
@@ -124,20 +206,14 @@ void structures::LinkedList<T>::insert(const T& data, std::size_t index){
     if(index > size_)
         throw std::out_of_range("Index out of bounds");
 
-    if(index == 1)
+    if(index == 0)
         return push_front(data);
 
-    Node *novo, *anterior;
-    novo = new Node(data);
-    if(novo == nullptr)
-        throw std::out_of_range("Full");
-
-    anterior = head;
+    Node *anterior = head;
     for (int i = 0; i < index-1; ++i){
         anterior=anterior->next();
     }
-    novo->next(anterior->next);
-    anterior->next(novo);
+    anterior->next(new Node(data, anterior->next()));
     ++size_;    
 }
 
@@ -147,19 +223,19 @@ void structures::LinkedList<T>::insert_sorted(const T& data){
         return push_front(data);
 
     Node* atual=head;
-    int index=1;
+    int index=0;
     while(atual->next() != nullptr && data > atual->data()){
         atual=atual->next();
         ++index;
     }
     if(data > atual->data())
         return insert(data, index+1);
-    else return inser(data, index)
+    else return insert(data, index);
 }
 
 template<typename T>
  T& structures::LinkedList<T>::at(std::size_t index){
-    if(index > siz])
+    if(index > size_)
         throw std::out_of_range("Out of bounds");
 
     if(empty())
@@ -173,10 +249,13 @@ template<typename T>
 
 template<typename T>
 T structures::LinkedList<T>::pop(std::size_t index){
-    if(index > size_)
+    if(index >= size_)
         throw std::out_of_range("Index out of bounds");
+    
+    if(empty())
+        throw std::out_of_range("Empty pop");
 
-    if(index == 1)
+    if(index == 0)
         return pop_front();
 
     Node *anterior, *eliminar;
@@ -195,13 +274,13 @@ T structures::LinkedList<T>::pop(std::size_t index){
 
 template<typename T>
 T structures::LinkedList<T>::pop_back(){
-    retrurn pop(size_-1)
+    return pop(size_-1);
 }
 
 template<typename T>
 T structures::LinkedList<T>::pop_front(){
     if(empty())
-        throw std::out_of_range("Empty");
+        throw std::out_of_range("Empty popfront");
 
     Node *saiu = head;
     T volta = saiu->data();
@@ -214,7 +293,7 @@ T structures::LinkedList<T>::pop_front(){
 template<typename T>
 void structures::LinkedList<T>::remove(const T& data){
     if(empty())
-        throw std::out_of_range("Empty");
+        throw std::out_of_range("Empty remove");
 
     pop(find(data));
 }
@@ -226,17 +305,17 @@ bool structures::LinkedList<T>::empty() const{
 
 template<typename T>
 bool structures::LinkedList<T>::contains(const T& data) const{
-    if(empty)
-        throw std::out_of_range("Empty");
+    if(empty())
+        throw std::out_of_range("Empty contains");
 
-    if(find(data) == size_) return false
+    if(find(data) == size_) return false;
     return true;
 }
 
 template<typename T>
 std::size_t structures::LinkedList<T>::find(const T& data) const{
     if(empty())
-        throw std::out_of_range("Empty");
+        throw std::out_of_range("Empty find");
 
     Node *atual=head;
     for (int i = 0; i < size_; ++i){
