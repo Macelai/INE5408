@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 //! Classe estrutura de dado, Lista encadeada.
 /*!
 * \author Vinicius Macelai.
@@ -7,12 +5,11 @@
 * \version 1.0
 */
 
->>>>>>> 9e67f470c8f94b7c87a14d6ecd7276e83710668e
 #ifndef STRUCTURES_LINKED_LIST_H
 #define STRUCTURES_LINKED_LIST_H
 
 #include <cstdint>
-
+#include <stdexcept>
 
 namespace structures {
 
@@ -22,24 +19,6 @@ template<typename T>
 */
 class LinkedList {
 public:
-<<<<<<< HEAD
-    LinkedList() // construtor padrão
-    ~LinkedList() // destrutor
-    void clear() // limpar lista
-    void push_back(const T& data) // inserir no fim
-    void push_front(const T& data) // inserir no início
-    void insert(const T& data, std::size_t index)  // inserir na posição
-    void insert_sorted(const T& data) // inserir em ordem
-    T& at(std::size_t index) // acessar um elemento na posição index
-    T pop(std::size_t index) // retirar da posição
-    T pop_back() // retirar do fim
-    T pop_front() // retirar do início
-    void remove(const T& data) // remover específico
-    bool empty() const // lista vazia
-    bool contains(const T& data) const // contém
-    std::size_t find(const T& data) const // posição do dado
-    std::size_t size() const // tamanho da lista
-=======
 //! Construtor da classe padrÃ£o .
 /*!
 */
@@ -131,9 +110,8 @@ public:
 \return o tamanho.
 */
     std::size_t size() const;
->>>>>>> 9e67f470c8f94b7c87a14d6ecd7276e83710668e
 private:
-    class Node { // Elemento
+    class Node {
     public:
         Node(const T& data):
             data_{data}
@@ -144,23 +122,23 @@ private:
             next_{next}
         {}
 
-        T& data() { // getter: dado
+        T& data() {
             return data_;
         }
 
-        const T& data() const { // getter const: dado
+        const T& data() const {
             return data_;
         }
 
-        Node* next() { // getter: próximo
+        Node* next() {
             return next_;
         }
 
-        const Node* next() const { // getter const: próximo
+        const Node* next() const {
             return next_;
         }
 
-        void next(Node* node) { // setter: próximo
+        void next(Node* node) {
             next_ = node;
         }
     private:
@@ -168,7 +146,7 @@ private:
         Node* next_{nullptr};
     };
 
-    Node* end() { // último nodo da lista
+    Node* end() {
         auto it = head;
         for (auto i = 1u; i < size(); ++i) {
             it = it->next();
@@ -184,8 +162,6 @@ private:
 
 #endif
 
-<<<<<<< HEAD
-=======
 template<typename T>
 structures::LinkedList<T>::LinkedList(){
     size_ = 0;
@@ -353,4 +329,3 @@ template<typename T>
 std::size_t structures::LinkedList<T>::size() const{
     return size_;
 }
->>>>>>> 9e67f470c8f94b7c87a14d6ecd7276e83710668e
