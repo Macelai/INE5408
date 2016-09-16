@@ -38,16 +38,20 @@ class DoublyLinkedList {
 \sa insert()
 */
     void push_back(const T& data) {
-        return insert(data, size_);
+        insert(data, size_-1);
     }
 //! Inserir um dado na lista na primeira posição.
 /*!
 \param data um generico do dado.
 */
     void push_front(const T& data) {
-        Node *novo = new Node(data, head);
+        Node *novo = new Node(data);
+        novo->next(head);
         novo->prev(nullptr);
         head = novo;
+        if (novo->next() != nullptr)
+            novo->next()->prev(novo);
+
         ++size_;
     }
 //! Inserir um dado na lista em posição determinado.
@@ -56,7 +60,7 @@ class DoublyLinkedList {
 \param index um size_t que representa o endereço para colocar na posição.
 */
     void insert(const T& data, std::size_t index) {
-    if (index > size_)
+    if (index > size_+1)
         throw std::out_of_range("Index out of bounds");
 
     if (index == 0)
@@ -66,8 +70,8 @@ class DoublyLinkedList {
     Node *anterior = head;
     for (int i = 0; i < index-1; ++i) {
         anterior = anterior->next();
+        novo->next()->prev(novo);
     }
-    novo->next(anterior->next());
     if (novo->next() != nullptr)
         novo->next()->prev(novo);
 
