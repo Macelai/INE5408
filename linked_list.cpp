@@ -1,248 +1,120 @@
-// Copyright 2016 Vinicius Macelai
+//! Classe estrutura de dado, Lista encadeada.
+/*!
+* \author Vinicius Macelai.
+* \since 08/09/16
+* \version 1.0
+*/
+
+#ifndef STRUCTURES_LINKED_LIST_H
+#define STRUCTURES_LINKED_LIST_H
+
 #include <cstdint>
 #include <stdexcept>
 
 namespace structures {
 
 template<typename T>
-//! Classe Lista duplamente encadeada.
+//! Classe da Lista encadeada.
 /*!
 */
-class DoublyLinkedList {
- public:
-    DoublyLinkedList() {
-        size_ = 0;
-        head = nullptr;
-    }
-
-    ~DoublyLinkedList() {
-        clear();
-    }
-//! Limpa a lista.
+class LinkedList {
+public:
+//! Construtor da classe padrÃ£o .
 /*!
 */
-    void clear() {
-        Node *atual, *anterior;
-        atual = head;
-        while (atual != nullptr) {
-            anterior = atual;
-            atual = atual->next();
-            delete anterior;
-        }
-        size_ = 0;
-        head = nullptr;
-    }
+    LinkedList();
+//! Destrutor da classe.
+/*!
+*/
+    ~LinkedList();
+//! Limpa a fila.
+/*!
+*/
+    void clear();
 //! Inserir um dado na lista na última posição.
 /*!
 \param data um generico do dado.
 \sa insert()
 */
-    void push_back(const T& data) {
-        return insert(data, size_);
-    }
+    void push_back(const T& data);
 //! Inserir um dado na lista na primeira posição.
 /*!
 \param data um generico do dado.
 */
-    void push_front(const T& data) {
-        Node *novo = new Node(data, head);
-        novo->prev(nullptr);
-        head = novo;
-        ++size_;
-    }
+    void push_front(const T& data);
 //! Inserir um dado na lista em posição determinado.
 /*!
 \param data um generico do dado.
 \param index um size_t que representa o endereço para colocar na posição.
 */
-    void insert(const T& data, std::size_t index) {
-    if (index > size_)
-        throw std::out_of_range("Index out of bounds");
-
-    if (index == 0)
-        return push_front(data);
-
-    Node *novo = new Node(data);
-    Node *anterior = head;
-    for (int i = 0; i < index-1; ++i) {
-        anterior = anterior->next();
-    }
-    novo->next(anterior->next());
-    if (novo->next() != nullptr)
-        novo->next()->prev(novo);
-
-    ++size_;
-    }
+    void insert(const T& data, std::size_t index);
 //! Inserir um dado na lista em ordem.
 /*!
 \param data um generico do dado.
 */
-    void insert_sorted(const T& data) {
-    if (empty())
-        return push_front(data);
-
-    Node* atual = head;
-    int index = 0;
-    while (atual->next() != nullptr && data > atual->data()) {
-        atual = atual->next();
-        ++index;
-    }
-    if (data > atual->data())
-        return insert(data, index+1);
-    return insert(data, index);
-    }
-//! Retira um dado de uma posição
-/*!
-\param index um size_t que representa o endereço.
-\return um dado.
-\sa empty()
-*/
-    T pop(std::size_t index) {
-    if (index >= size_)
-        throw std::out_of_range("Index out of bounds");
-
-    if (empty())
-        throw std::out_of_range("Empty pop");
-
-    if (index == 0)
-        return pop_front();
-
-    Node *anterior, *eliminar;
-    T volta;
-    anterior = head;
-    for (int i = 0; i < index-1; ++i) {
-        anterior = anterior->next();
-    }
-    eliminar = anterior->next();
-    volta = eliminar->data();
-    anterior->next(eliminar->next());
-    if (eliminar->next() != nullptr)
-        eliminar->next()->prev(anterior);
-
-    --size_;
-    delete eliminar;
-    return volta;
-    }
-//! Retira um dado da última posição.
-/*!
-\return um dado.
-\sa empty(), pop()
-*/
-    T pop_back() {
-    return pop(size_-1);
-    }
-//! Retira um dado da primeira posição
-/*!
-\return um dado.
-\sa empty()
-*/
-    T pop_front() {
-        if (empty())
-            throw std::out_of_range("Empty");
-
-        auto *saiu = head;
-        T volta;
-        volta = saiu->data();
-        head = saiu->next();
-        if (head != nullptr)
-            head->prev(nullptr);
-
-        --size_;
-        delete saiu;
-        return volta;
-    }
-//! Remove um dado percorrendo até descobrir.
-/*!
-\param data um gênerico do dado.
-\sa empty(),find(),pop()
-\return um dado.
-*/
-    void remove(const T& data) {
-    if (empty())
-        throw std::out_of_range("Empty remove");
-
-    pop(find(data));
-    }
-//! Verifica se está vazio
-/*!
-\return um boolean.
-*/
-    bool empty() const {
-        return size_ == 0;
-    }
-//! Verifica se contém um dado.
-/*!
-\param data um generico do dado.
-\return um boolean.
-\sa empty(), find()
-*/  
-    bool contains(const T& data) const {
-    if (empty())
-        throw std::out_of_range("Empty contains");
-
-    if (find(data) == size_) return false;
-    return true;
-    }
+    void insert_sorted(const T& data);
 //! Verifica dado em posição
 /*!
 \param index um size_t que representa o endereço.
 \return um generico
 \sa empty()
 */
-    T& at(std::size_t index) {
-    if (index > size_)
-        throw std::out_of_range("Out of bounds");
-
-    if (empty())
-        throw std::out_of_range("Empty");
-
-    Node *atual = head;
-    for (int i = 0; i < index; ++i) {
-        atual = atual->next();
-    } return atual->data();
-    }
-//! Verifica dado em posição sem checagens.
+    T& at(std::size_t index);
+//! Retira um dado de uma posição
 /*!
 \param index um size_t que representa o endereço.
-\return um generico
+\return um dado.
 \sa empty()
 */
-    const T& at(std::size_t index) const {
-    Node *atual = head;
-    for (int i = 0; i < index; ++i) {
-        atual = atual->next();
-    } return atual->data();
-    }
+    T pop(std::size_t index);
+//! Retira um dado da última posição.
+/*!
+\return um dado.
+\sa empty(), pop()
+*/
+    T pop_back();
+//! Retira um dado da primeira posição
+/*!
+\return um dado.
+\sa empty()
+*/
+    T pop_front(); 
+//! Remove um dado percorrendo até descobrir.
+/*!
+\param data um gênerico do dado.
+\sa empty(),find(),pop()
+\return um dado.
+*/
+    void remove(const T& data);
+//! Verifica se está vazio
+/*!
+\return um boolean.
+*/
+    bool empty() const;
+//! Verifica se contém um dado.
+/*!
+\param data um generico do dado.
+\return um boolean.
+\sa empty(), find()
+*/  
+    bool contains(const T& data) const;
 //! Acha um dado na lista.
 /*!
 \param data um generico do dado.
 \return um boolean.
 \sa empty()
 */
-    std::size_t find(const T& data) const {
-    if (empty())
-        throw std::out_of_range("Empty find");
-
-    Node *atual = head;
-    for (int i = 0; i < size_; ++i) {
-        if (atual->data() == data) return i;
-        atual = atual->next();
-    }
-    return size_;
-    }
+    std::size_t find(const T& data) const;
 //! Verifica o tamanho.
 /*!
 \return o tamanho.
 */
-    std::size_t size() const {
-        return size_;
-    }
-
- private:
+    std::size_t size() const;
+private:
     class Node {
-     public:
-        explicit Node(const T& data):
-            data_ {data}
+    public:
+        Node(const T& data):
+            data_{data}
         {}
 
         Node(const T& data, Node* next):
@@ -250,29 +122,12 @@ class DoublyLinkedList {
             next_{next}
         {}
 
-        Node(const T& data, Node* prev, Node* next):
-            data_{data},
-            next_{next},
-            prev_{prev}
-        {}
-
         T& data() {
             return data_;
         }
+
         const T& data() const {
             return data_;
-        }
-
-        Node* prev() {
-            return prev_;
-        }
-
-        const Node* prev() const {
-            return prev_;
-        }
-
-        void prev(Node* node) {
-            prev_ = node;
         }
 
         Node* next() {
@@ -286,15 +141,191 @@ class DoublyLinkedList {
         void next(Node* node) {
             next_ = node;
         }
-
-     private:
+    private:
         T data_;
-        Node* prev_;
-        Node* next_;
+        Node* next_{nullptr};
     };
 
-    Node* head;
-    std::size_t size_;
+    Node* end() {
+        auto it = head;
+        for (auto i = 1u; i < size(); ++i) {
+            it = it->next();
+        }
+        return it;
+    }
+
+    Node* head{nullptr};
+    std::size_t size_{0u};
 };
 
-}  // namespace structures
+}
+
+#endif
+
+template<typename T>
+structures::LinkedList<T>::LinkedList(){
+    size_ = 0;
+    head = nullptr;
+}
+
+template<typename T>
+structures::LinkedList<T>::~LinkedList(){
+    clear();
+}
+
+template<typename T>
+void structures::LinkedList<T>::clear(){
+    Node *atual, *anterior;
+    atual=head;
+    while(atual != nullptr){
+        anterior=atual;
+        atual=atual->next();
+        delete anterior;
+    }
+    size_=0;
+    head=nullptr;
+}
+
+template<typename T>
+void structures::LinkedList<T>::push_back(const T& data){
+    insert(data, size_);
+}
+
+template<typename T>
+void structures::LinkedList<T>::push_front(const T& data){
+    Node *novo = new Node(data, head);
+    if(novo == nullptr)
+        throw std::out_of_range("Full");
+
+    head=novo;
+    ++size_; 
+}
+
+template<typename T>
+void structures::LinkedList<T>::insert(const T& data, std::size_t index){
+    if(index > size_)
+        throw std::out_of_range("Index out of bounds");
+
+    if(index == 0)
+        return push_front(data);
+
+    Node *anterior = head;
+    for (int i = 0; i < index-1; ++i){
+        anterior=anterior->next();
+    }
+    anterior->next(new Node(data, anterior->next()));
+    ++size_;    
+}
+
+template<typename T>
+void structures::LinkedList<T>::insert_sorted(const T& data){
+    if(empty())
+        return push_front(data);
+
+    Node* atual=head;
+    int index=0;
+    while(atual->next() != nullptr && data > atual->data()){
+        atual=atual->next();
+        ++index;
+    }
+    if(data > atual->data())
+        return insert(data, index+1);
+    else return insert(data, index);
+}
+
+template<typename T>
+ T& structures::LinkedList<T>::at(std::size_t index){
+    if(index > size_)
+        throw std::out_of_range("Out of bounds");
+
+    if(empty())
+        throw std::out_of_range("Empty");
+
+    Node *atual=head;
+    for (int i = 0; i < index; ++i){
+        atual=atual->next();
+    } return atual->data();
+}
+
+template<typename T>
+T structures::LinkedList<T>::pop(std::size_t index){
+    if(index >= size_)
+        throw std::out_of_range("Index out of bounds");
+    
+    if(empty())
+        throw std::out_of_range("Empty pop");
+
+    if(index == 0)
+        return pop_front();
+
+    Node *anterior, *eliminar;
+    T volta;
+    anterior = head;
+    for (int i = 0; i < index-1; ++i){
+        anterior=anterior->next();
+    }
+    eliminar=anterior->next();
+    volta=eliminar->data();
+    anterior->next(eliminar->next());
+    --size_;
+    delete eliminar;
+    return volta;
+}
+
+template<typename T>
+T structures::LinkedList<T>::pop_back(){
+    return pop(size_-1);
+}
+
+template<typename T>
+T structures::LinkedList<T>::pop_front(){
+    if(empty())
+        throw std::out_of_range("Empty popfront");
+
+    Node *saiu = head;
+    T volta = saiu->data();
+    head = saiu->next();
+    --size_;
+    delete saiu;
+    return volta;
+}
+
+template<typename T>
+void structures::LinkedList<T>::remove(const T& data){
+    if(empty())
+        throw std::out_of_range("Empty remove");
+
+    pop(find(data));
+}
+
+template<typename T>
+bool structures::LinkedList<T>::empty() const{
+    return size_ == 0;
+}
+
+template<typename T>
+bool structures::LinkedList<T>::contains(const T& data) const{
+    if(empty())
+        throw std::out_of_range("Empty contains");
+
+    if(find(data) == size_) return false;
+    return true;
+}
+
+template<typename T>
+std::size_t structures::LinkedList<T>::find(const T& data) const{
+    if(empty())
+        throw std::out_of_range("Empty find");
+
+    Node *atual=head;
+    for (int i = 0; i < size_; ++i){
+        if(atual->data() == data) return i;
+        atual=atual->next();
+    }
+    return size_;
+}
+
+template<typename T>
+std::size_t structures::LinkedList<T>::size() const{
+    return size_;
+}
