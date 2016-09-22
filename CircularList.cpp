@@ -21,6 +21,7 @@ class CircularList {
 
     ~CircularList() {
         clear();
+        delete head;
     }
 //! Limpa a lista.
 /*!
@@ -52,8 +53,7 @@ class CircularList {
 \param data um generico do dado.
 */
     void push_front(const T& data) {
-        Node *novo = new Node(data, head->next());
-        head->next(novo);
+        head->next(new Node(data, head->next()));
         ++size_;
     }
 //! Inserir um dado na lista em posição determinada.
@@ -172,7 +172,9 @@ class CircularList {
             throw std::out_of_range("Empty");
 
         T dado = head->next()->data();
-        head->next(head->next()->next());
+        Node *aux = head->next()->next();
+        delete head->next();
+        head->next(aux);
         --size_;
         return dado;
     }
