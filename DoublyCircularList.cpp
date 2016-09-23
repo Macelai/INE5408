@@ -58,9 +58,6 @@ class DoublyCircularList {
         }
         novo->prev(aux);
         head = novo;
-        if (novo->next() != nullptr)
-            novo->next()->prev(novo);
-
         ++size_;
     }
 //! Inserir um dado na lista em posição determinada.
@@ -127,9 +124,6 @@ class DoublyCircularList {
         eliminar = anterior->next();
         volta = eliminar->data();
         anterior->next(eliminar->next());
-        if (eliminar->next() != nullptr)
-            eliminar->next()->prev(anterior);
-
         --size_;
         delete eliminar;
         return volta;
@@ -155,9 +149,6 @@ class DoublyCircularList {
         T volta;
         volta = saiu->data();
         head = saiu->next();
-        if (head != nullptr)
-            head->prev(nullptr);
-
         --size_;
         delete saiu;
         return volta;
