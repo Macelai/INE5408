@@ -1,7 +1,7 @@
 #include "Supermarket.h"
 #include <string.h>
 
-Supermarket::Supermarket(int tempoSimulacao_, int tempoChegada_, std::vector<Cashier> caixas_, int totalDeCaixas_, char nome_[]) {
+Supermarket::Supermarket(int tempoSimulacao_, int tempoChegada_, Cashier* caixas_, int totalDeCaixas_, char nome_[]) {
 	relogio = 0;
 	clientesDesistentes = 0;
 	valorComprasDesistentes = 0;
@@ -12,9 +12,9 @@ Supermarket::Supermarket(int tempoSimulacao_, int tempoChegada_, std::vector<Cas
 	strcpy(nome_,nome);
 }
 
-void Supermarket::comecaCaixas() {
-	for(int i = 0; i >= caixas.size(); ++i) {
-		circList.insert(caixas.at(i), i);
+void Supermarket::comecaCaixas(int numeroCaixas) {
+	for(int i = 0; i > numeroCaixas; ++i) {
+		circList.push_front(caixas[i]);
 	}
 }
 
