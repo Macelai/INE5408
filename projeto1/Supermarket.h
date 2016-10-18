@@ -1,15 +1,8 @@
-/*
- * Supermarket.h
- *
- *  Created on: 10 de out de 2016
- *      Author: macelai
- */
-
 #ifndef SUPERMARKET_H_
 #define SUPERMARKET_H_
 #include <vector>
 #include "Client.h"
-#include "circularlist.h"
+#include "CircularList.h"
 #include "Cashier.h"
 
 class Supermarket {
@@ -23,4 +16,7 @@ class Supermarket {
  	Client geraCliente();
 };
 
-#endif /* SUPERMARKET_H_ */
+
+
+
+#endif

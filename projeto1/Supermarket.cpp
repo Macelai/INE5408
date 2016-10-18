@@ -1,10 +1,3 @@
-/*
- * Supermarket.cpp
- *
- *  Created on: 10 de out de 2016
- *      Author: macelai
- */
-
 #include "Supermarket.h"
 #include <string.h>
 

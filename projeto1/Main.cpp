@@ -1,76 +1,68 @@
-/*
- * Main.cpp
- *
- *  Created on: 10 de out de 2016
- *      Author: macelai
- */
-
 #include "Supermarket.h"
 #include "Cashier.h"
+#include <fstream>
+#include <iostream>
+#include <cstdint>
+#include <stdexcept>
 
-class Main {
+char nomeMercado[] = "mercado";
+std::vector<Cashier> vector;
+Supermarket sp(600, 10, vector, 2, nomeMercado);
 
-	Supermarket superMarket;
-
-	void verificaSeCriaCliente(){
-		if(superMarket.relogio == superMarket.tempoChegada){
-			Client novo = superMarket.geraCliente();
-			//verifica se não há fila com menos de 10
-			int aux;
+void verificaSeCriaCliente(Supermarket superMarket){
+	if(superMarket.relogio == superMarket.tempoChegada){
+		Client novo = superMarket.geraCliente();
+		//verifica se não há fila com menos de 10
+		int aux;
+		for(int i = 0; i < superMarket.circList.size(); ++i){
+			if(superMarket.circList.at(i).calculaPessoas() > 9){
+				++aux;
+			}
+		}
+		if(aux == superMarket.circList.size()){
+			superMarket.valorComprasDesistentes = novo.valorTotalDeCompras * 3;
+			++superMarket.clientesDesistentes;
+			return;
+		}
+		//verifica qual caixa deve ir
+		int caixa;
+		if(novo.tipoDoCliente == 0) {
+			int compras = 500;
 			for(int i = 0; i < superMarket.circList.size(); ++i){
-				if(superMarket.circList.at(i).calculaPessoas() > 9){
-					++aux;
+				if(superMarket.circList.at(i).calculaCompras() < compras){
+					compras = superMarket.circList.at(i).calculaCompras();
+					caixa = i;
 				}
 			}
-			if(aux == superMarket.circList.size()){
-				superMarket.valorComprasDesistentes = novo.valorTotalDeCompras * 3;
-				++superMarket.clientesDesistentes;
-				return;
-			}
-			//verifica qual caixa deve ir
-			int caixa;
-			if(novo.tipoDoCliente == 0) {
-				int compras = 500;
-				for(int i = 0; i < superMarket.circList.size(); ++i){
-					if(superMarket.circList.at(i).calculaCompras() < compras){
-						compras = superMarket.circList.at(i).calculaCompras();
-						caixa = i;
-					}
-				}
-			}
-			else {
-				int pessoas = 500;
-				for(int i = 0; i < superMarket.circList.size(); ++i){
-					if(superMarket.circList.at(i).calculaPessoas() < pessoas) {
-						pessoas = superMarket.circList.at(i).calculaPessoas();
-						caixa = i;
-					}
-				}
 		}
-		//calcula tempo de saida
-		int tempoAnterior = 0;
-		for(int i = 0; i < superMarket.circList.at(caixa).queue.size(); ++i){
-			tempoAnterior += superMarket.circList.at(caixa).queue.at(i).tempoDeSaida;
-		}
-		novo.calculaTempoSaida(superMarket.circList.at(caixa).eficiencia, tempoAnterior);
-		superMarket.circList.at(caixa).queue.enqueue(novo);
-		superMarket.tempoChegada=+superMarket.tempoChegada;
-		}
-	}
-
-	int main(int argc, char **argv) {
-		char nomeMercado[] = "mercado";
-		std::vector<Cashier> vector;
-		Supermarket sp(600, 10, vector, 2, nomeMercado);
-		while(superMarket.relogio <= superMarket.tempoSimulacao) {
+		else {
+			int pessoas = 500;
 			for(int i = 0; i < superMarket.circList.size(); ++i){
-				superMarket.circList.at(i).verificaSeSai(superMarket.relogio);
+				if(superMarket.circList.at(i).calculaPessoas() < pessoas) {
+					pessoas = superMarket.circList.at(i).calculaPessoas();
+					caixa = i;
+				}
 			}
-			verificaSeCriaCliente();
-			++superMarket.relogio;
-		}
-		return 0;
 	}
+	//calcula tempo de saida
+	int tempoAnterior = 0;
+	for(int i = 0; i < superMarket.circList.at(caixa).queue.size(); ++i){
+		tempoAnterior += superMarket.circList.at(caixa).queue.at(i).tempoDeSaida;
+	}
+	novo.calculaTempoSaida(superMarket.circList.at(caixa).eficiencia, tempoAnterior);
+	superMarket.circList.at(caixa).queue.enqueue(novo);
+	superMarket.tempoChegada=+superMarket.tempoChegada;
+	}
+}
 
 
-};
+int main(int argc, char **argv) {
+		while(sp.relogio <= sp.tempoSimulacao) {
+			for(int i = 0; i < sp.circList.size(); ++i){
+				sp.circList.at(i).verificaSeSai(sp.relogio);
+			}
+			verificaSeCriaCliente(sp);
+			++sp.relogio;
+		}
+	return 0;
+}
