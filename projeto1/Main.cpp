@@ -10,6 +10,8 @@
 using namespace std;
 
 Supermarket superMarket;
+int numeroCaixas;
+
 void verificaSeCriaCliente(){
 	if(superMarket.relogio == superMarket.tempoChegada){
 		Client novo = superMarket.geraCliente();
@@ -65,10 +67,27 @@ void verificaSeCriaCliente(){
 	}
 }
 
+void calculaDados(){
+	int faturamentoMercado = 0;
+	int faturamentoMedio = 0;
+	for(int i = 0; i < superMarket.circList.size(); ++i){
+		faturamentoMercado = faturamentoMercado + superMarket.circList.at(i).faturamentoTotal;
+	}
+	faturamentoMedio = faturamentoMercado / numeroCaixas;
+
+	printf("Faturamento total: %d\n", faturamentoMercado);
+	printf("Faturamento médio por caixa: %d\n", faturamentoMedio);
+	for(int i = 0; i < numeroCaixas; ++i) {
+		printf("Faturamento real do caixa %d: " "%d\n", i, superMarket.circList.at(i).faturamentoTotal);
+	}
+	printf("Clientes desistentes: %d\n", superMarket.clientesDesistentes);
+	printf("Faturamento perdido: %d\n", superMarket.valorComprasDesistentes);
+}
+
 
 int main(int argc, char **argv) {	
 	char linha[100], nomeMercado[50], *sub, nomeCaixa[80];
-	int tempoSimulacao, tempoChegada, numeroCaixas, eficiencia, salario;
+	int tempoSimulacao, tempoChegada, eficiencia, salario;
 	ifstream arquivo("market.dat");
 	
 	arquivo.getline(linha, 200);
@@ -122,8 +141,6 @@ int main(int argc, char **argv) {
 		verificaSeCriaCliente();
 		++superMarket.relogio;
 	}
-	printf("desistentes%d\n", superMarket.clientesDesistentes);
-	printf("faturamento %d\n", superMarket.circList.at(0).faturamentoTotal);
-	printf("clientes atentidos %d\n", superMarket.circList.at(0).clientesAtendidos);
+	calculaDados();
 	return 0;
 }
