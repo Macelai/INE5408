@@ -6,7 +6,7 @@ Supermarket::Supermarket(int tempoSimulacao_, int tempoChegada_, Cashier* caixas
 	clientesDesistentes = 0;
 	valorComprasDesistentes = 0;
 	tempoSimulacao = tempoSimulacao_;
-	tempoChegada = tempoChegada_;
+	tempoChegada = 0;
 	tempoChegadaNovo = tempoChegada_;
 	caixas = caixas_;
 	totalDeCaixas = totalDeCaixas_;

@@ -10,10 +10,8 @@
 using namespace std;
 
 Supermarket superMarket;
-
 void verificaSeCriaCliente(){
 	if(superMarket.relogio == superMarket.tempoChegada){
-		printf("a\n");
 		Client novo = superMarket.geraCliente();
 		//verifica se não há fila com menos de 10
 		int aux;
@@ -22,9 +20,11 @@ void verificaSeCriaCliente(){
 				++aux;
 			}
 		}
+
 		if(aux == superMarket.circList.size()){
 			superMarket.valorComprasDesistentes = novo.valorTotalDeCompras * 3;
 			++superMarket.clientesDesistentes;
+			superMarket.tempoChegada = superMarket.tempoChegada + superMarket.tempoChegadaNovo;
 			return;
 		}
 		//verifica qual caixa deve ir
@@ -46,60 +46,75 @@ void verificaSeCriaCliente(){
 					caixa = i;
 				}
 			}
-	}
-	//calcula tempo de saida
-	int tempoAnterior = 0;
-	for(int i = 0; i < superMarket.circList.at(caixa).queue.size(); ++i){
-		tempoAnterior += superMarket.circList.at(caixa).queue.at(i).tempoDeSaida;
-	}
-	novo.calculaTempoSaida(superMarket.circList.at(caixa).eficiencia, tempoAnterior);
-	superMarket.circList.at(caixa).queue.enqueue(novo);
-	superMarket.tempoChegada = superMarket.tempoChegada + superMarket.tempoChegadaNovo;
+		}
+		if (superMarket.circList.at(caixa).queue.size() > 9) {
+			superMarket.valorComprasDesistentes = novo.valorTotalDeCompras * 3;
+			++superMarket.clientesDesistentes;
+			superMarket.tempoChegada = superMarket.tempoChegada + superMarket.tempoChegadaNovo;
+			return;
+		}
+		//calcula tempo de saida
+		int tempoAnterior = 0;
+		for(int i = 0; i < superMarket.circList.at(caixa).queue.size(); ++i){
+			tempoAnterior = tempoAnterior + superMarket.circList.at(caixa).queue.at(i).calculaTempoAnterior(
+				superMarket.circList.at(caixa).eficiencia);
+		}
+		novo.calculaTempoSaida(superMarket.circList.at(caixa).eficiencia, tempoAnterior);
+		superMarket.circList.at(caixa).queue.enqueue(novo);
+		superMarket.tempoChegada = superMarket.tempoChegada + superMarket.tempoChegadaNovo;
 	}
 }
 
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv) {	
 	char linha[100], nomeMercado[50], *sub, nomeCaixa[80];
 	int tempoSimulacao, tempoChegada, numeroCaixas, eficiencia, salario;
 	ifstream arquivo("market.dat");
 	
-	arquivo.getline(linha, 100);
-	
+	arquivo.getline(linha, 200);
 	strncpy(nomeMercado, linha, 50);
-	arquivo >> tempoSimulacao;
-	arquivo >> tempoChegada;
-	arquivo >> numeroCaixas;
+	
+	arquivo.getline(linha, 200);
+	tempoSimulacao = atoi(linha);
+
+	arquivo.getline(linha, 200);
+	tempoChegada = atoi(linha);
+
+	arquivo.getline(linha, 200);
+	numeroCaixas = atoi(linha);
 
 	cout << "Nome do Supermercado: " << nomeMercado << endl;
 	cout << "Tempo de Simulacao: " << tempoSimulacao << endl;
 	cout << "Tempo medio de chegada de clientes: " << tempoChegada << " segundos."<< endl;
-	cout << "Numero de caixas: " << numeroCaixas << endl;
-
-	arquivo.getline(linha,200);
+	cout << "Numero de caixas: " << numeroCaixas << "\n" << endl;
 
 	Cashier* array;
 	array = new Cashier[numeroCaixas];
-	/*for (int i = 0; i < numeroCaixas; i++) {
-		arquivo.getline(linha,200);	  
-		sub = strtok(linha, "-");
-		strncpy(nomeCaixa,sub,80);
-		sub = strtok(NULL, "-");
-		eficiencia = atoi(sub);
-		sub = strtok(NULL, "-");
-		salario = atoi(sub);
-		printf("%d\n", eficiencia);
+	for (int i = 0; i < numeroCaixas; ++i) {
+		arquivo.getline(linha, 200);
+		strcpy(nomeCaixa, linha);
+
+		arquivo.getline(linha, 200);
+		eficiencia = atoi(linha);
+
+		arquivo.getline(linha, 200);
+		salario = atoi(linha);
+
+		cout << "Nome: " << nomeCaixa << endl;
+		cout << "Eficiencia: " << eficiencia << endl;
+		cout << "Salario: " << salario << "\n" << endl;
+		
 		Cashier c(eficiencia, salario, nomeCaixa);
 		array[i] = c;
-	}*/
+	}
 
-	Cashier c1(1, 800, nomeMercado);
-	array[0] = c1;
-	array[1] = c1;
-	array[2] = c1;
 	superMarket = Supermarket(tempoSimulacao, tempoChegada, array, numeroCaixas, nomeMercado);
+	srand (time(NULL));
 
-	superMarket.circList.push_front(array[0]);
+	for(int i = 0; i < numeroCaixas; ++i) {
+		superMarket.circList.push_front(array[i]);
+	}
+
 	while(superMarket.relogio < superMarket.tempoSimulacao) {
 		for(int i = 0; i < superMarket.circList.size(); ++i){
 			superMarket.circList.at(i).verificaSeSai(superMarket.relogio);
@@ -107,6 +122,7 @@ int main(int argc, char **argv) {
 		verificaSeCriaCliente();
 		++superMarket.relogio;
 	}
-	printf("%d\n", superMarket.circList.at(0).clientesAtendidos);
+	printf("desistentes%d\n", superMarket.clientesDesistentes);
+		printf("clientes atentidos %d\n", superMarket.circList.at(0).clientesAtendidos);
 	return 0;
 }

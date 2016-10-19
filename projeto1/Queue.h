@@ -111,7 +111,7 @@ class LinkedQueue {
     }
 
     T& at(int k) {
-    	Node* atual;
+    	Node* atual = head;
     	for(int i = 0; i < k; ++i){
     		atual = atual->next();
     	}
