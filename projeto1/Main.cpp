@@ -6,13 +6,14 @@
 #include <fstream>
 #include <stdlib.h>
 #include <string.h>
-#include <vector>
+
 using namespace std;
 
-vector<Cashier> vetor(100);
+Supermarket superMarket;
 
-void verificaSeCriaCliente(Supermarket superMarket){
+void verificaSeCriaCliente(){
 	if(superMarket.relogio == superMarket.tempoChegada){
+		printf("a\n");
 		Client novo = superMarket.geraCliente();
 		//verifica se não há fila com menos de 10
 		int aux;
@@ -53,7 +54,7 @@ void verificaSeCriaCliente(Supermarket superMarket){
 	}
 	novo.calculaTempoSaida(superMarket.circList.at(caixa).eficiencia, tempoAnterior);
 	superMarket.circList.at(caixa).queue.enqueue(novo);
-	superMarket.tempoChegada=+superMarket.tempoChegada;
+	superMarket.tempoChegada = superMarket.tempoChegada + superMarket.tempoChegadaNovo;
 	}
 }
 
@@ -79,7 +80,7 @@ int main(int argc, char **argv) {
 
 	Cashier* array;
 	array = new Cashier[numeroCaixas];
-	for (int i = 0; i < numeroCaixas; i++) {
+	/*for (int i = 0; i < numeroCaixas; i++) {
 		arquivo.getline(linha,200);	  
 		sub = strtok(linha, "-");
 		strncpy(nomeCaixa,sub,80);
@@ -90,22 +91,22 @@ int main(int argc, char **argv) {
 		printf("%d\n", eficiencia);
 		Cashier c(eficiencia, salario, nomeCaixa);
 		array[i] = c;
-	}
+	}*/
 
-	/*Cashier c1(1, 800, nomeMercado);
+	Cashier c1(1, 800, nomeMercado);
 	array[0] = c1;
 	array[1] = c1;
-	array[2] = c1;*/
-	Supermarket sp(tempoSimulacao, tempoChegada, array, numeroCaixas, nomeMercado);
+	array[2] = c1;
+	superMarket = Supermarket(tempoSimulacao, tempoChegada, array, numeroCaixas, nomeMercado);
 
-	sp.comecaCaixas(numeroCaixas);
-	while(sp.relogio < sp.tempoSimulacao) {
-		for(int i = 0; i < sp.circList.size(); ++i){
-			sp.circList.at(i).verificaSeSai(sp.relogio);
+	superMarket.circList.push_front(array[0]);
+	while(superMarket.relogio < superMarket.tempoSimulacao) {
+		for(int i = 0; i < superMarket.circList.size(); ++i){
+			superMarket.circList.at(i).verificaSeSai(superMarket.relogio);
 		}
-		verificaSeCriaCliente(sp);
-		++sp.relogio;
+		verificaSeCriaCliente();
+		++superMarket.relogio;
 	}
-	printf("%d\n", sp.circList.at(1).clientesAtendidos);
+	printf("%d\n", superMarket.circList.at(0).clientesAtendidos);
 	return 0;
 }
