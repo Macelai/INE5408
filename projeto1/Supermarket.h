@@ -13,7 +13,6 @@ class Supermarket {
  	char nome[];
  	Supermarket();
  	Supermarket(int tempoSimulacao_, int tempoChegada, Cashier* caixas_, int totalDeCaixas, char nome[]);
- 	void comecaCaixas(int numeroCaixas);
  	Client geraCliente();
 };
 

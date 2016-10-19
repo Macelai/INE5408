@@ -84,8 +84,8 @@ int main(int argc, char **argv) {
 	numeroCaixas = atoi(linha);
 
 	cout << "Nome do Supermercado: " << nomeMercado << endl;
-	cout << "Tempo de Simulacao: " << tempoSimulacao << endl;
-	cout << "Tempo medio de chegada de clientes: " << tempoChegada << " segundos."<< endl;
+	cout << "Tempo de Simulacao: " << tempoSimulacao << " horas"<<endl;
+	cout << "Tempo medio de chegada de clientes: " << tempoChegada << " segundos"<< endl;
 	cout << "Numero de caixas: " << numeroCaixas << "\n" << endl;
 
 	Cashier* array;
@@ -123,6 +123,7 @@ int main(int argc, char **argv) {
 		++superMarket.relogio;
 	}
 	printf("desistentes%d\n", superMarket.clientesDesistentes);
-		printf("clientes atentidos %d\n", superMarket.circList.at(0).clientesAtendidos);
+	printf("faturamento %d\n", superMarket.circList.at(0).faturamentoTotal);
+	printf("clientes atentidos %d\n", superMarket.circList.at(0).clientesAtendidos);
 	return 0;
 }

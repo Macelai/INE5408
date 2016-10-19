@@ -29,7 +29,7 @@ void Cashier::verificaSeSai(int relogio) {
 	} else	
 	if(relogio == queue.front().tempoDeSaida){
 		faturamentoTotal = faturamentoTotal + queue.front().valorTotalDeCompras;
-		++clientesAtendidos;
+		clientesAtendidos++;
 		tempoMedioFila = (queue.front().tempoDeSaida - queue.front().tempoDeChegada + tempoMedioFila) / clientesAtendidos;
 		queue.dequeue();
 	}
