@@ -24,7 +24,7 @@ void verificaSeCriaCliente(){
 		}
 
 		if(aux == superMarket.circList.size()){
-			superMarket.valorComprasDesistentes = novo.valorTotalDeCompras * 3;
+			superMarket.valorComprasDesistentes = superMarket.valorComprasDesistentes + novo.valorTotalDeCompras * 3;
 			++superMarket.clientesDesistentes;
 			superMarket.tempoChegada = superMarket.tempoChegada + superMarket.tempoChegadaNovo;
 			return;
@@ -50,7 +50,7 @@ void verificaSeCriaCliente(){
 			}
 		}
 		if (superMarket.circList.at(caixa).queue.size() > 9) {
-			superMarket.valorComprasDesistentes = novo.valorTotalDeCompras * 3;
+			superMarket.valorComprasDesistentes = superMarket.valorComprasDesistentes + novo.valorTotalDeCompras * 3;
 			++superMarket.clientesDesistentes;
 			superMarket.tempoChegada = superMarket.tempoChegada + superMarket.tempoChegadaNovo;
 			return;
