@@ -9,10 +9,9 @@ class Supermarket {
  public:
  	CircularList<Cashier> circList{};
  	int relogio, clientesDesistentes, valorComprasDesistentes, tempoSimulacao, tempoChegada, totalDeCaixas, tempoChegadaNovo;
- 	Cashier* caixas;
  	char nome[];
  	Supermarket();
- 	Supermarket(int tempoSimulacao_, int tempoChegada, Cashier* caixas_, int totalDeCaixas, char nome[]);
+ 	Supermarket(int tempoSimulacao_, int tempoChegada, int totalDeCaixas, char nome[]);
  	Client geraCliente();
 };
 

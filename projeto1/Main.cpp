@@ -10,7 +10,8 @@
 using namespace std;
 
 Supermarket superMarket;
-int numeroCaixas;
+int tempoSimulacao, tempoChegada, numeroCaixas;
+char nomeMercado[50];
 
 void verificaSeCriaCliente(){
 	if(superMarket.relogio == superMarket.tempoChegada){
@@ -80,14 +81,23 @@ void calculaDados(){
 	for(int i = 0; i < numeroCaixas; ++i) {
 		printf("Faturamento real do caixa %d: " "%d\n", i, superMarket.circList.at(i).faturamentoTotal);
 	}
+	for(int i = 0; i < numeroCaixas; ++i) {
+		printf("Lucro do caixa %d: " "%d\n", i, superMarket.circList.at(i).faturamentoTotal - 
+			superMarket.circList.at(i).salario * superMarket.tempoSimulacao/3600);
+	}
+	int tempoFila = 0;
+	for (int i = 0; i < numeroCaixas; ++i) {
+		tempoFila = tempoFila + superMarket.circList.at(i).tempoMedioFila;
+	}
+	printf("Tempo médio na fila: %d\n", tempoFila/numeroCaixas);
 	printf("Clientes desistentes: %d\n", superMarket.clientesDesistentes);
 	printf("Faturamento perdido: %d\n", superMarket.valorComprasDesistentes);
+	printf("\nDesenvolvido por Vinicius Macelai e Vinicius Eiske\n");
 }
 
-
-int main(int argc, char **argv) {	
+void leituraInfo() {
 	char linha[100], nomeMercado[50], *sub, nomeCaixa[80];
-	int tempoSimulacao, tempoChegada, eficiencia, salario;
+	int eficiencia, salario;
 	ifstream arquivo("market.dat");
 	
 	arquivo.getline(linha, 200);
@@ -122,18 +132,18 @@ int main(int argc, char **argv) {
 		cout << "Nome: " << nomeCaixa << endl;
 		cout << "Eficiencia: " << eficiencia << endl;
 		cout << "Salario: " << salario << "\n" << endl;
-		
+		superMarket = Supermarket(tempoSimulacao, tempoChegada, numeroCaixas, nomeMercado);
 		Cashier c(eficiencia, salario, nomeCaixa);
 		array[i] = c;
 	}
-
-	superMarket = Supermarket(tempoSimulacao, tempoChegada, array, numeroCaixas, nomeMercado);
-	srand (time(NULL));
-
 	for(int i = 0; i < numeroCaixas; ++i) {
 		superMarket.circList.push_front(array[i]);
 	}
+}
 
+int main(int argc, char **argv) {
+	leituraInfo();
+	srand (time(NULL));
 	while(superMarket.relogio < superMarket.tempoSimulacao) {
 		for(int i = 0; i < superMarket.circList.size(); ++i){
 			superMarket.circList.at(i).verificaSeSai(superMarket.relogio);

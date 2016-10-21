@@ -18,43 +18,6 @@ class LinkedQueue {
         tail = nullptr;
     }
 
-    LinkedQueue(const LinkedQueue& other) {
-        size_ = 0;
-        LinkedQueue queue;
-        for (std::size_t i = other.size_; i > 0; --i) {
-            T copy(other.at(i - 1));
-            queue.enqueue(copy);
-        }
-        std::swap(head, queue.head);
-        std::swap(size_, queue.size_);
-        std::swap(tail, queue.tail);
-    }
-
-    LinkedQueue& operator=(const LinkedQueue& other) {
-        LinkedQueue queue(other);
-        std::swap(head, queue.head);
-        std::swap(tail, queue.tail);
-        std::swap(size_, queue.size_);
-        return *this;
-    }
-
-    LinkedQueue(LinkedQueue&& other):
-            head{other.head},
-            size_{other.size_},
-            tail{other.tail} {
-        other.head->next(other.head);
-        other.tail->next(other.tail);
-        other.size_ = 0;
-    }
-
-    LinkedQueue& operator=(LinkedQueue&& other) {
-        LinkedQueue queue(std::move(other));
-        std::swap(head, queue.head);
-        std::swap(size_, queue.size_);
-        std:swap(tail, queue.tail);
-        return *this;
-    }
-
 //! Destrutor padrão.
 /*!
 */
