@@ -17,7 +17,7 @@ void verificaSeCriaCliente(){
 	if(superMarket.relogio == superMarket.tempoChegada){
 		Client novo = superMarket.geraCliente();
 		//verifica se não há fila com menos de 10
-		int aux;
+		int aux = 0;
 		for(int i = 0; i < superMarket.circList.size(); ++i){
 			if(superMarket.circList.at(i).calculaPessoas() > 9){
 				++aux;
@@ -31,7 +31,7 @@ void verificaSeCriaCliente(){
 			return;
 		}
 		//verifica qual caixa deve ir
-		int caixa;
+		int caixa = 0;
 		if(novo.tipoDoCliente == 0) {
 			int compras = 500;
 			for(int i = 0; i < superMarket.circList.size(); ++i){
@@ -49,12 +49,6 @@ void verificaSeCriaCliente(){
 					caixa = i;
 				}
 			}
-		}
-		if (superMarket.circList.at(caixa).queue.size() > 9) {
-			superMarket.valorComprasDesistentes = superMarket.valorComprasDesistentes + novo.valorTotalDeCompras * 3;
-			++superMarket.clientesDesistentes;
-			superMarket.tempoChegada = superMarket.tempoChegada + superMarket.tempoChegadaNovo;
-			return;
 		}
 		//calcula tempo de saida
 		int tempoAnterior = 0;
