@@ -29,12 +29,8 @@ void Cashier::verificaSeSai(int relogio) {
 	} else	
 	if(relogio == queue.front().tempoDeSaida){
 		faturamentoTotal = faturamentoTotal + queue.front().valorTotalDeCompras;
-		if (clientesAtendidos == 0) {
-			tempoMedioFila = (queue.front().tempoDeSaida - queue.front().tempoDeChegada + tempoMedioFila) / 1;
-		} else {
-			tempoMedioFila = (queue.front().tempoDeSaida - queue.front().tempoDeChegada + tempoMedioFila) / clientesAtendidos;
-		}		
 		++clientesAtendidos;
+		tempoMedioFila = (queue.front().tempoDeSaida - queue.front().tempoDeChegada + tempoMedioFila) / clientesAtendidos;
 		queue.dequeue();
 	}
 }
