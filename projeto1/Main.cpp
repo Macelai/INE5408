@@ -23,13 +23,12 @@ void verificaSeCriaCliente(){
 				++aux;
 			}
 		}
-
 		if(aux == superMarket.circList.size()){
 			superMarket.valorComprasDesistentes = superMarket.valorComprasDesistentes + novo.valorTotalDeCompras * 3;
 			++superMarket.clientesDesistentes;
 			superMarket.tempoChegada = superMarket.tempoChegada + superMarket.tempoChegadaNovo;
 			return;
-		}
+		} 
 		//verifica qual caixa deve ir
 		int caixa = 0;
 		if(novo.tipoDoCliente == 0) {
@@ -40,8 +39,7 @@ void verificaSeCriaCliente(){
 					caixa = i;
 				}
 			}
-		}
-		else {
+		} else {
 			int pessoas = 500;
 			for(int i = 0; i < superMarket.circList.size(); ++i){
 				if(superMarket.circList.at(i).calculaPessoas() < pessoas) {
@@ -53,8 +51,8 @@ void verificaSeCriaCliente(){
 		//calcula tempo de saida
 		int tempoAnterior = 0;
 		for(int i = 0; i < superMarket.circList.at(caixa).queue.size(); ++i){
-			tempoAnterior = tempoAnterior + superMarket.circList.at(caixa).queue.at(i).calculaTempoAnterior(
-				superMarket.circList.at(caixa).eficiencia);
+			tempoAnterior = tempoAnterior + superMarket.circList.at(caixa).queue.at(i).tempoDeSaida -
+			superMarket.circList.at(caixa).queue.at(i).tempoDeChegada;
 		}
 		novo.calculaTempoSaida(superMarket.circList.at(caixa).eficiencia, tempoAnterior);
 		superMarket.circList.at(caixa).queue.enqueue(novo);
