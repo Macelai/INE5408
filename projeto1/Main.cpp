@@ -1,3 +1,4 @@
+// UFSC 2016.2 Vinicius Macelai, Vinicius Eiske
 #include "Supermarket.h"
 #include "Cashier.h"
 #include <iostream>
@@ -84,11 +85,12 @@ void calculaDados(){
 	printf("Tempo médio na fila: %d\n", tempoFila/numeroCaixas);
 	printf("Clientes desistentes: %d\n", superMarket.clientesDesistentes);
 	printf("Faturamento perdido: %d\n", superMarket.valorComprasDesistentes);
-	printf("\nDesenvolvido por Vinicius Macelai e Vinicius Eiske\n");
+	printf("------------------------------------------------\n");
+	printf("\n2016.2 UFSC Vinicius Macelai e Vinicius Eiske\n");
 }
 
 void leituraInfo() {
-	char linha[100], nomeMercado[50], *sub, nomeCaixa[80];
+	char linha[100], nomeMercado[50], nomeCaixa[80];
 	int eficiencia, salario;
 	ifstream arquivo("market.dat");
 	
@@ -133,8 +135,99 @@ void leituraInfo() {
 	}
 }
 
+void captaInfo() {
+	string nomeMercadoStr, nomeCaixaStr, tempoSimulacaoStr, tempoMedioChegadaStr;
+	string quantidadeCaixaStr, eficienciaCaixaStr, salarioCaixaStr;
+	int eficienciaCaixa, salarioCaixa;
+
+	cout << "Digite o nome do Supermercado.\n";
+	getline(cin, nomeMercadoStr);
+	char * nomeMercado = new char[nomeMercadoStr.length() + 1];
+	strcpy(nomeMercado, nomeMercadoStr.c_str());
+
+	cout << "Digite o tempo de simulacao.\n";
+	getline(cin, tempoSimulacaoStr);
+	tempoSimulacao = stoi(tempoSimulacaoStr);
+
+	cout << "Digite o tempo medio de chegada de clientes.\n";
+	getline(cin, tempoMedioChegadaStr);
+	tempoChegada = stoi(tempoMedioChegadaStr);
+
+	cout << "Digite a quantidade de caixas.\n";
+	getline(cin, quantidadeCaixaStr);
+	numeroCaixas = stoi(quantidadeCaixaStr);
+
+	cout << "Nome do Supermercado: " << nomeMercado << endl;
+	cout << "Tempo de Simulacao: " << tempoSimulacao << " horas"<<endl;
+	cout << "Tempo medio de chegada de clientes: " << tempoChegada << " segundos"<< endl;
+	cout << "Numero de caixas: " << numeroCaixas << "\n" << endl;
+
+	Cashier* array;
+	array = new Cashier[numeroCaixas];
+	for (int i = 0; i < numeroCaixas; i++) {
+		cout << "Digite o nome do caixa.\n";
+		getline(cin, nomeCaixaStr);
+		char * nomeCaixa = new char[nomeCaixaStr.length() + 1];
+		strcpy(nomeCaixa, nomeCaixaStr.c_str());
+
+		cout << "Digite a eficiencia do caixa.\n";
+		getline(cin, eficienciaCaixaStr);
+		eficienciaCaixa = stoi(eficienciaCaixaStr);
+
+		cout << "Digite o salario.\n";
+		getline(cin, salarioCaixaStr);
+		salarioCaixa = stoi(salarioCaixaStr);
+
+		cout << "Nome: " << nomeCaixa << endl;
+		cout << "Eficiencia: " << eficienciaCaixa << endl;
+		cout << "Salario: " << salarioCaixa << "\n" << endl;
+		superMarket = Supermarket(tempoSimulacao, tempoChegada, numeroCaixas, nomeMercado);
+		Cashier c(eficienciaCaixa, salarioCaixa, nomeCaixa);
+		array[i] = c;
+	}
+
+	for(int i = 0; i < numeroCaixas; ++i) {
+		superMarket.circList.push_front(array[i]);
+	}	
+}
+
+bool execucao() {
+	std::string formaExecucaoStr;
+	int formaExecucaoInt;
+	bool arquivo, verdade = true;
+
+	while (verdade) {
+		std::cin >> formaExecucaoStr;
+		std::cin.ignore();
+		formaExecucaoInt = stoi(formaExecucaoStr);
+
+		if (formaExecucaoInt < 0 || formaExecucaoInt > 1) {
+			std::cout << "Opcao invalido.";
+		}
+		verdade = false;
+	}
+
+	if (formaExecucaoInt == 1) {
+		arquivo = true;
+	} else {
+		arquivo = false;
+	}
+	return arquivo;
+}
+
+void mensagemExecucao() {
+	cout << "Selecione a forma de entrada da simulacao:\n";
+	cout << "----- 1: Atraves de arquivo salvo.\n";			
+	cout << "----- 0: Digitar dados.\n";
+}
+
 int main(int argc, char **argv) {
-	leituraInfo();
+	mensagemExecucao();
+	if (execucao()) {
+		leituraInfo();
+	} else {
+		captaInfo();
+	}
 	srand (time(NULL));
 	while(superMarket.relogio < superMarket.tempoSimulacao) {
 		for(int i = 0; i < superMarket.circList.size(); ++i){
