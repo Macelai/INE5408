@@ -217,8 +217,8 @@ bool execucao() {
 
 void mensagemExecucao() {
 	cout << "Selecione a forma de entrada da simulacao:\n";
-	cout << "----- 1: Atraves de arquivo salvo.\n";			
 	cout << "----- 0: Digitar dados.\n";
+	cout << "----- 1: Atraves de arquivo salvo(market.dat).\n";			
 }
 
 int main(int argc, char **argv) {
