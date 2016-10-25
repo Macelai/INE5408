@@ -19,7 +19,6 @@ public:
     ArrayList();
     ArrayList(std::size_t max_size);
     ~ArrayList();
-
     void clear();
     void push_back(T data);
     void push_front(T data);
