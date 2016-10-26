@@ -26,7 +26,7 @@ int Client::calculaTempo(int eficiencia) {
 	if (tipoDePagamento <= 2){ cheque = true;}
 	if (eficiencia == 1 && cheque) adicionalCheque = 10;
 	if (eficiencia == 2 && cheque) adicionalCheque = 25;
-	if (eficiencia == 3 && cheque) adicionalCheque = 40;
+	if (eficiencia == 3 && cheque) adicionalCheque = 60;
 	total = (totalDeCompras * auxEfi) + adicionalCheque;
 	return total;
 }
