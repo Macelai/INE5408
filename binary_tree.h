@@ -1,6 +1,5 @@
 #include "array_list.cpp"
 
-
 namespace structures {
 
 class BinaryTree {
