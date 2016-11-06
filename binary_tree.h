@@ -12,7 +12,7 @@ class BinaryTree {
  public:
     ~BinaryTree() {
         if (!empty()) {
-            delete root;
+            // root->clear();
         }
         size_ = 0;
     }
@@ -35,12 +35,14 @@ class BinaryTree {
 \sa empty()
 */
     void remove(const T& data) {
+        bool b = false;
         if (empty()) {
             return;
         } else {
-            root->remove(data);
+            b = root->remove(data);
         }
-        --size_;
+        if (b)
+            --size_;
     }
 //! Verifica se contém um dado.
 /*!
@@ -112,14 +114,17 @@ class BinaryTree {
             data{data_}
         {}
 
-        ~Node() {
-            delete right;
-            delete left;
-        }
-
         T data;
         Node* left = nullptr;
         Node* right = nullptr;
+
+        void clear() {
+            if (right != nullptr)
+                right->clear();
+            if (left != nullptr)
+                left->clear();
+            delete this;
+        }
 
         void insert(const T& data_) {
             if (data < data_) {
@@ -142,15 +147,15 @@ class BinaryTree {
                 if (right != nullptr && left != nullptr) {
                     auto tmp = minimo(right);
                     data = tmp->data;
-                    right->remove(data);
+                    return right->remove(data);
                 } else {
                     if (right != nullptr) {
-                        delete right;
-                        return true;
+                        data = right->data;
+                        return right->remove(data);
                     } else {
                         if (left != nullptr) {
-                            delete left;
-                            return true;
+                            data = left->data;
+                            return left->remove(data);
                         } else {
                             delete this;
                             return true;
