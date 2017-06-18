@@ -1,2 +1,2 @@
-# INE5408
-Data Structure
+# Data strucres
+Some data structures writen in C++
